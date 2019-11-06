@@ -3,6 +3,7 @@ Dungeon Masters Tools
 Has two main abilties: Encounters and Player Information
 The encounters enables a DM to put in details of monsters and characters and it works out what type of encounter it is
 The Player information takes note of the players name, their character name and their max health.
+
 """
 
 from tkinter import *#include everything from the tkinter module
