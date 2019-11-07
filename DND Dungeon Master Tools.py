@@ -4,7 +4,7 @@ Has three main functions: Encounters, Player Information, Initiative Track
  - The Encounters section enables a DM to put in details of monsters and characters and it works out what type of encounter it is out of
 deadly, hard, medium or easy for the players
  - The Player information takes note of the players name, their character name and their max health and stores this in a file for the
- DM to refer to in future 
+ DM to refer to in future
  - The Initiative Track enables the DM to track what is happening during combat. It allows entry of updated player information including
  what the player has rolled for their initiative. It then places the players in order for the DM. At the end of each turn the End Turn
  button pressed will update the list and place the player at the top to the bottom and move each other one up. It also enables the DM
@@ -163,7 +163,6 @@ class encounters(Frame):#the encounters page
         page_three = Button(f, text="Initiative Tracker", command=lambda: controller.show_frame(initiativePage))  # creates the button to the initiative tracker page
         page_three.grid(row=1, column=12)
 
-
 class players(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -238,7 +237,7 @@ class initiativePage(Frame):#the initiative page to allow a DM to track an encou
         f = Frame(self, width = 500, height = 500)#creates the frame on the page
         f.pack(side=LEFT, expand = 1)
         label = Label(f, text="Initiative tracker",font=("Verdana",16))#adds the label for the title of the program.the f determines it is placed in the frame
-        label.grid(row=1,column=2)#determines where inside the frame the label is placed
+        label.grid(row=1,column=1, columnspan=4)#determines where inside the frame the label is placed
 
         def endTurn():
             #at the end of a turn when the turn complete button is pressed the array is reordered to show the next
@@ -252,17 +251,15 @@ class initiativePage(Frame):#the initiative page to allow a DM to track an encou
 
         def editinfo():#the user can update information like the health once a player has taken damage
             item = int(listItem.get())-1#gets the person in the list
-            aspect = int(aspectItem.get())-1#gets the aspect such as health, name or AC
+            aspect = aspectItem.get()#gets the aspect such as health, name or AC
             newVal = newValue.get()#gets the new value to replace the old one
 
-            if aspect==0: #updates the existing array of data
+            if aspect=="Name": #updates the existing array of data
                 newinitInfo[item][0]=newVal
-            elif aspect==1:
+            elif aspect=="AC":
                 newinitInfo[item][1]=newVal
-            elif aspect==2:
+            elif aspect=="Health":
                 newinitInfo[item][2]=newVal
-            elif aspect==3:
-                newinitInfo[item][3]=newVal
             #newinitInfo[item]=
             disInit()
 
@@ -284,12 +281,12 @@ class initiativePage(Frame):#the initiative page to allow a DM to track an encou
 
         def disInit():
             #displays the initiative order to the screen with the key data
-            i = 10
+            i = 11
             initOrderShow = Label(f, text="Initiative Order:", font=("Verdana", 8))
-            initOrderShow.grid(row=9, columnspan=2, sticky=E)
+            initOrderShow.grid(row=11, column=1, columnspan=2, sticky=E)
             for d in newinitInfo:
-                charName = Label(f, text="Name: " + d[0] + "\t AC: " + str(d[1]) + "\t   Max Health: " + str(d[2]), font=("Verdana", 8))
-                charName.grid(row=i + 7, columnspan=2, sticky=W)
+                charName = Label(f, text="Name: " + d[0] + "\t AC: " + str(d[1]) + "\t   Max Health: " + str(d[2])+ "\tInitiative Roll: "+str(d[3]), font=("Verdana", 8))
+                charName.grid(row=i + 1, column=1,columnspan=2, sticky=W)
                 i += 1
 
         def initOrder():#gets the information from the data entry to add to the new array.
@@ -302,8 +299,9 @@ class initiativePage(Frame):#the initiative page to allow a DM to track an encou
             for j in range(n):#reorders the array to place the players in their initative order.
                 for i in range(n):
                     if newinitInfo[i][3] == newinitInfo[i + 1][3]:#informs the DM of players who have rolled the same number
-                        sameNo = Label(f, text=newinitInfo[i][0] + " has rolled the same as " + newinitInfo[i + 1][0], font=("Verdana", 8))
-                        sameNo.grid(row=i+14, column=1,columnspan=5)
+                        sameNo = Label(f, text=newinitInfo[i][0] + " has rolled the same as " + newinitInfo[i + 1][0],fg="Red", font=("Verdana", 12))
+                        sameNo.grid(row=20, column=1,columnspan=3)
+
                     elif newinitInfo[i][3] < newinitInfo[i + 1][3]:
                         newinitInfo[i + 1][4] -= 1
                         newinitInfo[i][4] += 1
@@ -314,77 +312,87 @@ class initiativePage(Frame):#the initiative page to allow a DM to track an encou
             disInit()
 
             turnEnd = Button(f, text="Turn complete",command=lambda: endTurn())  # creates the button to go to the encounters page
-            turnEnd.grid(row=19, column=2)#button to call the turn complete function
+            turnEnd.grid(row=11, column=4)#button to call the turn complete function
 
 
         def initiativeBoxes():#this will show the boxes to enter the character information for name, Character AC, the max health, initiativeRoll
 
             #labels
             charName = Label(f, text="Name",font=("Verdana",8))
-            charName.grid(row=5,columnspan=2, sticky=E)
+            charName.grid(row=5,column=1, sticky=E)
             #entry
             nameInit = Entry(f)
             nameInit.grid(row=5,column=2)
 
             #labels
-            playerName = Label(f, text="Character AC",font=("Verdana",8))
-            playerName.grid(row=5,column=3,columnspan=3, sticky=E)
+            playerName = Label(f, text="AC",font=("Verdana",8))
+            playerName.grid(row=5,column=3, sticky=E)
             #entry
             charAC = Entry(f)
-            charAC.grid(row=5,column=6)
+            charAC.grid(row=5,column=4)
                           #labels
-            health = Label(f, text="Max Health",font=("Verdana",8))
-            health.grid(row=5,column=7, sticky=E)
+            health = Label(f, text="Health",font=("Verdana",8))
+            health.grid(row=5,column=5, sticky=E)
             #entry
             maxhealth = Entry(f)
-            maxhealth.grid(row=5,column=8)
+            maxhealth.grid(row=5,column=6)
 
             #labels
-            initiativeRoll = Label(f, text="Initiative Roll",font=("Verdana",8))
-            initiativeRoll.grid(row=5,column=15,columnspan=4, sticky=E)
+            initiativeRoll = Label(f, text="Roll",font=("Verdana",8))
+            initiativeRoll.grid(row=5,column=7, sticky=E)
             #entry
             initRoll = Entry(f)
-            initRoll.grid(row=5,column=19)
+            initRoll.grid(row=5,column=8)
             initInfo.append([nameInit,charAC,maxhealth,initRoll])#adds the boxes to the array
             bttInitiative = Button(f, text="Put into order", command=initOrder)#creates the button to the Character Info page
-            bttInitiative.grid(row=13,column=9)
+            bttInitiative.grid(row=7,column=1)
 
         bttInitiative = Button(f, text="Enter Info", command=initiativeBoxes)#creates the button enter Info
-        bttInitiative.grid(row=3,column=5)#each time the button is pressed a new player can be added to the encounter
-
+        bttInitiative.grid(row=3,column=1)#each time the button is pressed a new player can be added to the encounter
+        instructions = Label(f, text="Select Enter Info. Add each character/monster individually and press Enter Info again to add more. ")
+        instructions.grid(row=2, columnspan=20, sticky=W)
+        instructions2 = Label(f, text="If multiple players rolled the same a message will show. Change the order, using numbers, in the box below")
+        instructions2.grid(row=6,columnspan=6, sticky=W)
         #shows the entry boxes should the DM wish to change order of the players i.e. if two rolled the same, or player held their initiative order
-        updateInitOrder = Button(f, text="Update Initiative: Enter two positions to swap", command=updateOrder)
-        updateInitOrder.grid(row=3, column=8)
+        updateInitOrder = Button(f, text="Swap these positions", command=updateOrder)
+        updateInitOrder.grid(row=7, column=3, columnspan=2)
         pos1 = Entry(f)
-        pos1.grid(row=3, column=19)
+        pos1.grid(row=7, column=5)
         pos2 = Entry(f)
-        pos2.grid(row=3, column=20)
-
+        pos2.grid(row=7, column=6)
+       # master = Tk()
         #shows the data entry boxes for editing an item in the list should a player health need to be updated
-        editLabel = Label(f, text="Enter number in list above to edit.")
-        editLabel.grid(row=20, column=3)
+        editLabel = Label(f, text="Enter player number in list to the left to edit.")
+        editLabel.grid(row=12, column=6)
         listItem = Entry(f)
-        listItem.grid(row=20, column=6)
-        aspLabel = Label(f, text="Aspect Number")
-        aspLabel.grid(row=21, column=3)
-        aspectItem = Entry(f)
-        aspectItem.grid(row=21, column=6)
+        listItem.grid(row=12, column=7)
+
+        #ASPECT
+        aspects = ["Name","AC","Health"]#these are the options for the drop down menu
+        aspLabel = Label(f, text="Aspect")# label for the drop down menu
+        aspLabel.grid(row=13, column=6, sticky=E)#position of label
+        aspectItem = StringVar(f)
+        aspectItem.set(aspects[2])#sets default to health as this is likely to be most common
+        w = OptionMenu(f,aspectItem, *aspects)#setup the drop down menu with the aspects list and assigning to aspectItem
+        w.grid(row=13,column=7)#positions the drop down menu
+
+        #THE NEW VALUE
         newValueLabel = Label(f, text="New Value")
-        newValueLabel.grid(row=22, column=3)
+        newValueLabel.grid(row=14, column=6, sticky=E)
         newValue = Entry(f)
-        newValue.grid(row=22, column=6)
+        newValue.grid(row=14, column=7)
 
         #adds the button to update the data calling the editinfo function
         upData = Button(f, text="UPDATE DATA", command=lambda: editinfo())
-        upData.grid(row=23, column=6)
+        upData.grid(row=15, column=6)
 
         #displays buttons to the other pages and to get back to the home page
         page_two = Button(f, text="Character Info", command=lambda:controller.show_frame(players))#creates the button to the Character Info page
-        page_two.grid(row=1,column=5)
+        page_two.grid(row=1,column=7)
         page_one = Button(f, text="Encounters", command=lambda:controller.show_frame(encounters))#creates the button to go to the encounters page
-        page_one.grid(row=1,column=4)
+        page_one.grid(row=1,column=6)
         start_page = Button(f, text="Back to Start", command=lambda:controller.show_frame(StartPage))#creates the button to go to the encounters page
-        start_page.grid(row=1,column=3)
+        start_page.grid(row=1,column=5)
 
 class MainMenu:
     def __init__(self, master):#the main menu to allow the user to quit by going to File and Exit
